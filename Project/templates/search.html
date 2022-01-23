@@ -22,6 +22,7 @@
             <section class="bg-white py-10">
                 <div class="container">
 
+                    {% if all_post  %}
                     <h1>Search Result:</h1>
                     <hr />
                     <div class="row">
@@ -48,9 +49,13 @@
                             >
                         </div>
                         {% endfor %}
+                        {% else %}
+                            <h1 class='text-center bold'>No Data Found</h1>
+                        {% endif %}
 
                     </div>
 
+                    {% if all_post %}
                     <nav aria-label="Page navigation example">
                         <ul class="pagination pagination-blog justify-content-center">
                             {% if all_post.has_previous %}
@@ -75,6 +80,7 @@
 
                         </ul>
                     </nav>
+                    {% endif %}
 
 
                 </div>
