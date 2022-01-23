@@ -107,11 +107,14 @@ def singin(request):
         email = request.POST["email"]
         password = request.POST["password"]
 
-        found_cust = Customer.objects.raw(f"SELECT * FROM Customer_customer WHERE email ={email} AND password = {password}")
-        if(found_cust is not None):
+        flag = Customer.objects.filter(user_email=email,user_pass=password).exists()
+        if(flag):
+            info_customer = Customer.objects.get(user_email=email)
+            name = info_customer.user_first + '.' + info_customer.user_last[0].upper()
             request.session["email"] = email
             request.session["password"] = password
-
+            request.session['name'] = name
+            request.session['id'] = info_customer.id
             return redirect('/home')
         else:
             messages.info(request,"Error in Email Or Password")
@@ -189,3 +192,41 @@ def cat_post(request,cat_id):
     }
     return render(request,"categories_post.html",data)
 
+def change_pass(request):
+    if request.session.get('email') == None:
+        return redirect("/home")
+    else:
+        if request.method == 'POST':
+            flag = False
+            password = request.POST['password']
+            new_password = request.POST['new_password']
+            new_password_again = request.POST['new_password_again']
+
+            print(password)
+            print(new_password)
+            print(new_password_again)
+            print(request.session.get('password'))
+            print(request.session.get('email'))
+            print(request.session.get('id'))
+
+            if password != request.session.get('password'):
+                flag = True
+                messages.info(request,"Old Password is not Correct")
+
+            if new_password != new_password_again:
+                flag = True
+                messages.info(request,"Password Don't Matching")
+
+            if(flag):
+                return redirect('/change_password')
+            else:
+                new_password = request.POST['new_password']
+                Customer.objects.filter(id=request.session.get('id')).update(user_pass=new_password)
+                # Customer.objects.raw(f"Update Customer_Customer set user_pass = {password} Where id = 2")
+                request.session["password"] = password
+                context = {
+                    'success' : "password Change Successfully"
+                }
+                return render(request,'change_password.html',context)
+        else:
+            return render(request,'change_password.html')
