@@ -17,7 +17,7 @@ def home(request):
 
     most_views = post.objects.raw("SELECT * FROM Posts_post WHERE Posts_post.post_status = 1 ORDER BY post_view DESC LIMIT 3")
 
-    all_cat = Categories.objects.raw("SELECT count(*) as count_post,Categories_categories.*  FROM Posts_post JOIN Categories_categories on Categories_categories.id = Posts_post.cat_id_id GROUP by Categories_categories.id LIMIT 3")
+    all_cat = Categories.objects.raw("SELECT count(*) as count_post,Categories_categories.*  FROM Posts_post JOIN Categories_categories on Categories_categories.id = Posts_post.cat_id_id GROUP by Categories_categories.id LIMIT 6")
 
     data = {
         'most_pupolar' : most_pupolar,
